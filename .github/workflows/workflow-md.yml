@@ -1,0 +1,40 @@
+name: Markdown linting
+
+on:
+  push:
+    branches: [ release ]
+  pull_request:
+    branches: [ release ]
+
+jobs:
+
+  lint-markdown:
+    name: Lint Markdown
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install linter
+        run: npm install -g markdownlint-cli
+
+      - name: Display Message - Linting Markdown Files
+        run: echo "Linting Markdown files..."
+
+      - name: Run markdownlint
+        run: markdownlint '**/*.md' --ignore node_modules --config ./.github/linter/.markdownlint.json
+      - name: Display Message - Linting Complete
+        run: echo "Linting of Markdown files is complete."
+
+      - name: Display Linting Results
+        if: ${{ always() }}
+        run: echo "Review the output above to see the linting results."
+
